@@ -300,8 +300,8 @@
                     products = await response.json();
                     localStorage.setItem('products', JSON.stringify(products));
                 }
-                
-               // Dogru çalışıyor. Verileri localstorageye kaydettim console.log(localStorage.getItem('products'))
+
+                // Dogru çalışıyor. Verileri localstorageye kaydettim console.log(localStorage.getItem('products'))
 
 
 
@@ -340,18 +340,33 @@
                     mostSaleImage.src = 'https://www.e-bebek.com/assets/images/cok-satan@2x.png';
                     imageContainer.appendChild(mostSaleImage);
 
-                    const favDiv = document.createElement('div');
+                    const favDiv = document.createElement('button');
                     favDiv.className = 'corner-image add-Favorite-wrapper';
                     imageContainer.appendChild(favDiv);
+
+                    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+                    if (favorites.includes(product.id)) {
+                        favDiv.style.backgroundColor = 'orange';
+                    }
+
 
                     const addFavorite = document.createElement('img');
                     addFavorite.className = 'add-Favorite-icon';
                     addFavorite.src = 'https://www.e-bebek.com/assets/svg/default-favorite.svg';
                     favDiv.appendChild(addFavorite);
-
+                    
                     favDiv.addEventListener('click', (e) => {
                         e.preventDefault();
                         e.stopPropagation();
+
+                        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+                        const productId = product.id;
+
+                        if (!favorites.includes(productId)) {
+                            favorites.push(productId);
+                            localStorage.setItem('favorites', JSON.stringify(favorites));
+                            favDiv.style.backgroundColor = 'orange';
+                        }
                     });
 
                     const header = document.createElement('span');
