@@ -51,7 +51,7 @@
     .carousel-product{
    z-index: 1;
     display: block;
-   
+   cursor:pointer;
     font-family: Poppins, "cursive";
     font-size: 12px;
     width:230px;
@@ -70,6 +70,9 @@
     gap:10px
    
 
+    }
+    .carousel-product:hover{
+     border: 3.5px solid rgb(242, 142, 0);
     }
     .product-image{
     height:203px;
@@ -103,95 +106,104 @@
     font-family: Poppins, "cursive";
     font-size: 1.4rem;
     font-weight: 700;
-    margin-top:40px
+    margin-top:40px;
+    }
+
+    .basket-button:hover{
+    color: white;
+    background-color:rgb(242, 142, 0);
     }
   `;
-    const api = 'https://gist.githubusercontent.com/sevindi/8bcbde9f02c1d4abe112809c974e1f49/raw/9bf93b58df623a9b16f1db721cd0a7a539296cf0/products.json'
-    const addContentAfterStories = () => {
-        const targetElement = document.querySelector('.ins-preview-wrapper');
 
-        if (targetElement) {
-            const wrapper = document.createElement('div');
-            wrapper.innerHTML = html;
+    if (window.location.pathname === "/") {
+        const api = 'https://gist.githubusercontent.com/sevindi/8bcbde9f02c1d4abe112809c974e1f49/raw/9bf93b58df623a9b16f1db721cd0a7a539296cf0/products.json'
+        const addContentAfterStories = () => {
+            const targetElement = document.querySelector('.ins-preview-wrapper');
 
-            targetElement.insertAdjacentElement('afterend', wrapper.firstElementChild);
+            if (targetElement) {
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = html;
 
-            const style = document.createElement('style');
-            style.textContent = css;
-            document.head.appendChild(style);
+                targetElement.insertAdjacentElement('afterend', wrapper.firstElementChild);
+
+                const style = document.createElement('style');
+                style.textContent = css;
+                document.head.appendChild(style);
+            }
+
+
+        };
+        const getAllProducts = async () => {
+
+            try {
+                await fetch(api)
+                    .then(res => res.json())
+                    .then(products => {
+                        products.forEach(product => {
+                            const targetDiv = document.querySelector('.carousel-items');
+                            const link = document.createElement('a');
+                            link.href = product.url;
+                            link.target = '_blank';
+                            const productDiv = document.createElement('div')
+                            productDiv.className = 'carousel-product'
+                            targetDiv.appendChild(productDiv)
+                            link.appendChild(productDiv);
+                            targetDiv.appendChild(link);
+
+                            const upperSide = document.createElement('div')
+                            upperSide.className = 'upper-side'
+                            productDiv.appendChild(upperSide)
+
+                            const productImage = document.createElement('img')
+                            productImage.className = 'product-image'
+                            productImage.src = product.img
+                            upperSide.appendChild(productImage)
+
+                            const header = document.createElement('span')
+                            header.className = 'product-header'
+                            header.textContent = product.brand + ' -' + ' '
+                            upperSide.appendChild(header)
+
+                            const productName = document.createElement('span')
+                            productName.className = 'product-name'
+                            productName.textContent = product.name
+                            header.appendChild(productName)
+
+                            const productPrice = document.createElement('span')
+                            productPrice.className = 'product-price'
+                            productPrice.textContent = product.price + ' TL'
+                            upperSide.appendChild(productPrice)
+
+                            const bottomSide = document.createElement('div')
+                            bottomSide.className = 'bottom-side'
+                            productDiv.appendChild(bottomSide)
+
+                            const addBasketButton = document.createElement('button')
+                            addBasketButton.className = 'basket-button'
+                            addBasketButton.textContent = 'Sepete Ekle'
+                            bottomSide.appendChild(addBasketButton)
+
+
+                        }
+                        )
+                    })
+            } catch (error) {
+                alert(error)
+            }
+
+
         }
-
-
-    };
-    const getAllProducts = async() => {
-
-        try {
-           await fetch(api)
-                .then(res => res.json())
-                .then(products => {
-                    products.forEach(product => {
-                        const targetDiv = document.querySelector('.carousel-items');
-                        const productDiv = document.createElement('div')
-                        productDiv.className='carousel-product'
-                        targetDiv.appendChild(productDiv)
-
-
-                        const upperSide = document.createElement('div')
-                        upperSide.className='upper-side'
-                        productDiv.appendChild(upperSide)
-
-                        const productImage = document.createElement('img')
-                        productImage.className='product-image'
-                        productImage.src = product.img
-                        upperSide.appendChild(productImage)
-
-                        const header=document.createElement('span')
-                        header.className='product-header'
-                        header.textContent=product.brand+ ' -' +' '
-                        upperSide.appendChild(header)
-
-                        const productName=document.createElement('span')
-                        productName.className='product-name'
-                        productName.textContent=product.name
-                        header.appendChild(productName) 
-                        
-                          const productPrice=document.createElement('span')
-                        productPrice.className='product-price'
-                        productPrice.textContent=product.price + ' TL'
-                        upperSide.appendChild(productPrice) 
-
-                        const bottomSide = document.createElement('div')
-                        bottomSide.className='bottom-side'
-                        productDiv.appendChild(bottomSide)
-
-                          const addBasketButton=document.createElement('button')
-                        addBasketButton.className='basket-button'
-                        addBasketButton.textContent='Sepete Ekle'
-                        bottomSide.appendChild(addBasketButton) 
-
-
-                    }
-                    )
-                })
-        } catch (error) {
-            alert(error)
-        }
-
-
-    }
-    //     <div clas='padding 5px'>
-    //         <div class='upper-side'>
-    //             <img/>
-    //             <span> Bold yazı -star <span>Açıklama </span></span>
-    //             <span>price burada</span>
-    //         </div>
-
-    //         <div clas='bottom-side' >
-    // <button>Sepete Ekle</button>
-    //         </div>
-
-    //     </div>
-
+        
     addContentAfterStories();
     getAllProducts();
+
+    } else {
+        console.log("wrong page");
+    }
+
+
+
+
+
+
 })();
