@@ -1,5 +1,5 @@
 (() => {
-  const html = `
+    const html = `
     <div class="containerr">
       <div class="carousel-header">
         <h2 class="carousel-text">Beğenebileceğinizi düşündüklerimiz</h2>
@@ -10,7 +10,7 @@
     </div>
   `;
 
-  const css = `
+    const css = `
     @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap');
 
     .containerr {
@@ -41,22 +41,157 @@
       color: #f28e00;
       margin: 0;
     }
-  `;
+      .carousel-items{
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px;
+    margin-top:15px
 
-  const addContentAfterDene = () => {
-    const targetElement = document.querySelector('.ins-preview-wrapper');
-
-    if (targetElement) {
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = html;
-
-      targetElement.insertAdjacentElement('afterend', wrapper.firstElementChild);
-
-      const style = document.createElement('style');
-      style.textContent = css;
-      document.head.appendChild(style);
     }
-  };
+    .carousel-product{
+   z-index: 1;
+    display: block;
+   
+    font-family: Poppins, "cursive";
+    font-size: 12px;
+    width:230px;
+    padding: 15px;
+    color: #7d7d7d;
+    margin: 0 0 20px 3px;
+    border: 1px solid #ededed;
+    border-radius: 10px;
+    position: relative;
+    text-decoration: none;
+    background-color: #fff;
+    }
+    .upper-side{
+    display:flex;
+    flex-direction:column;
+    gap:10px
+   
 
-  addContentAfterDene();
+    }
+    .product-image{
+    height:203px;
+    max-width:100%;
+    margin-bottom:45px;
+    
+    }
+    .product-header{
+        font-weight: bolder;
+        height:42px;
+    }
+        .product-name{
+        font-weight:normal;
+        }
+    .product-price{
+        display: block;
+    width: 100%;
+    font-size: 2.2rem;
+    font-weight: 600;
+    height:43px;
+    margin-top:45px;
+    
+    }
+    
+    .basket-button{
+    width: 100%;
+    padding: 15px 20px;
+    border-radius: 37.5px;
+    background-color: #fff7ec;
+    color: #f28e00;
+    font-family: Poppins, "cursive";
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-top:40px
+    }
+  `;
+    const api = 'https://gist.githubusercontent.com/sevindi/8bcbde9f02c1d4abe112809c974e1f49/raw/9bf93b58df623a9b16f1db721cd0a7a539296cf0/products.json'
+    const addContentAfterStories = () => {
+        const targetElement = document.querySelector('.ins-preview-wrapper');
+
+        if (targetElement) {
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = html;
+
+            targetElement.insertAdjacentElement('afterend', wrapper.firstElementChild);
+
+            const style = document.createElement('style');
+            style.textContent = css;
+            document.head.appendChild(style);
+        }
+
+
+    };
+    const getAllProducts = async() => {
+
+        try {
+           await fetch(api)
+                .then(res => res.json())
+                .then(products => {
+                    products.forEach(product => {
+                        const targetDiv = document.querySelector('.carousel-items');
+                        const productDiv = document.createElement('div')
+                        productDiv.className='carousel-product'
+                        targetDiv.appendChild(productDiv)
+
+
+                        const upperSide = document.createElement('div')
+                        upperSide.className='upper-side'
+                        productDiv.appendChild(upperSide)
+
+                        const productImage = document.createElement('img')
+                        productImage.className='product-image'
+                        productImage.src = product.img
+                        upperSide.appendChild(productImage)
+
+                        const header=document.createElement('span')
+                        header.className='product-header'
+                        header.textContent=product.brand+ ' -' +' '
+                        upperSide.appendChild(header)
+
+                        const productName=document.createElement('span')
+                        productName.className='product-name'
+                        productName.textContent=product.name
+                        header.appendChild(productName) 
+                        
+                          const productPrice=document.createElement('span')
+                        productPrice.className='product-price'
+                        productPrice.textContent=product.price + ' TL'
+                        upperSide.appendChild(productPrice) 
+
+                        const bottomSide = document.createElement('div')
+                        bottomSide.className='bottom-side'
+                        productDiv.appendChild(bottomSide)
+
+                          const addBasketButton=document.createElement('button')
+                        addBasketButton.className='basket-button'
+                        addBasketButton.textContent='Sepete Ekle'
+                        bottomSide.appendChild(addBasketButton) 
+
+
+                    }
+                    )
+                })
+        } catch (error) {
+            alert(error)
+        }
+
+
+    }
+    //     <div clas='padding 5px'>
+    //         <div class='upper-side'>
+    //             <img/>
+    //             <span> Bold yazı -star <span>Açıklama </span></span>
+    //             <span>price burada</span>
+    //         </div>
+
+    //         <div clas='bottom-side' >
+    // <button>Sepete Ekle</button>
+    //         </div>
+
+    //     </div>
+
+    addContentAfterStories();
+    getAllProducts();
 })();
